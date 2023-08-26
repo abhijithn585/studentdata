@@ -117,6 +117,7 @@ class _EditStudentListState extends State<EditStudentList> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
+                          maxLength: 10,
                           controller: _numberController,
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(), hintText: 'Number'),

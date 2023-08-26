@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/db/functions/db_functions.dart';
 import 'package:flutter_application_1/db/model/data_model.dart';
 import 'package:flutter_application_1/screens/widgets/list_student_widget.dart';
@@ -23,6 +24,7 @@ class _AddStudentWidgetState extends State<AddStudentWidget> {
   final _addressController = TextEditingController();
 
   File? _selectedImage;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,123 +36,138 @@ class _AddStudentWidgetState extends State<AddStudentWidget> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              CircleAvatar(
-                radius: 80,
-                backgroundColor: Colors.grey,
-                backgroundImage: _selectedImage != null
-                    ? FileImage(_selectedImage!)
-                    : AssetImage("assets/images/profile-transformed.png")
-                        as ImageProvider,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                  onPressed: () => {_pickImageFromGallery()},
-                  child: Text("Pick Gallery")),
-              SizedBox(
-                width: 10,
-              ),
-              ElevatedButton(
-                  onPressed: () => {_pickImageFromcam()},
-                  child: Text("Pick Camera")),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), hintText: 'Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Value is Empty';
-                    } else {
-                      return null;
-                    }
-                  },
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _ageController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), hintText: 'Age'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Value is Empty';
-                    } else {
-                      return null;
-                    }
-                  },
+                CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.grey,
+                  backgroundImage: _selectedImage != null
+                      ? FileImage(_selectedImage!)
+                      : AssetImage("assets/images/profile-transformed.png")
+                          as ImageProvider,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _numberController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), hintText: 'Number'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Value is Empty';
-                    } else {
-                      return null;
-                    }
-                  },
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _addressController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), hintText: 'Address'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Value is Empty';
-                    } else {
-                      return null;
-                    }
-                  },
+                ElevatedButton(
+                    onPressed: () => {_pickImageFromGallery()},
+                    child: Text("Pick Gallery")),
+                SizedBox(
+                  width: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton.icon(
+                ElevatedButton(
+                    onPressed: () => {_pickImageFromcam()},
+                    child: Text("Pick Camera")),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-z]'))
+                    ],
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), hintText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Value is Empty';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                    ],
+                    controller: _ageController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), hintText: 'Age'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Value is Empty';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    maxLength: 10,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                    ],
+                    controller: _numberController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), hintText: 'Number'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'name is requierd';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _addressController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), hintText: 'Address'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'name is requierd';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                FloatingActionButton(
                   onPressed: () {
+                    _formKey.currentState!.validate();
                     onAddStudentButtonClicked();
                   },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Student')),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ListStudentWidget(),
-                    ));
-                  },
-                  child: const Text("View List"))
-            ],
+                  child: Icon(Icons.add),
+                ),
+                // label: const Text('Add Student')),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const ListStudentWidget(),
+                      ));
+                    },
+                    child: const Text("View List"))
+              ],
+            ),
           ),
         ),
       ),
